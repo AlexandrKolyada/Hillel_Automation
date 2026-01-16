@@ -28,7 +28,6 @@ storona_4 = 4
 perimetery = storona_1 + storona_2 + storona_3 + storona_4
 print(perimetery)
 
-
 """
     # Задачі 07 -10:
     # Переведіть задачі з книги "Математика, 2 клас"
