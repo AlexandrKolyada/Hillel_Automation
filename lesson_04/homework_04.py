@@ -89,7 +89,6 @@ print("|" * 40)
 # task 10
 """ Виведіть кількість слів останнього речення з adwentures_of_tom_sawer_sentences.
 """
-
 lengs_word = len(adwentures_of_tom_sawer_sentences[3].split())
 print(lengs_word)
 print("|" * 40)
