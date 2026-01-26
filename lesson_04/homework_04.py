@@ -65,7 +65,6 @@ text_index = adwentures_of_tom_sawer.find('Tom', 2)
 print(text_index)
 print("|" * 40)
 
-
 # task 07
 """ Розділіть змінну adwentures_of_tom_sawer по кінцю речення.
 Збережіть результат у змінній adwentures_of_tom_sawer_sentences
