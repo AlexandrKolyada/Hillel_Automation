@@ -42,7 +42,6 @@ car_data = {
 search_criteria = (2017, 1.6, 36000)
 
 y_min, engine_min, price_max = search_criteria
-
 matches = [
     brand
     for brand, (color, year, engine, type, price) in car_data.items()
