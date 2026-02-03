@@ -2,3 +2,4 @@
 .DS_Store/
 .venv
 .MyTest/
+/MyTest/TestTest.py
