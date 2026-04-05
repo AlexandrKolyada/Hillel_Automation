@@ -3,3 +3,4 @@
 .venv
 .MyTest/
 /MyTest/TestTest.py
+*.pyc
