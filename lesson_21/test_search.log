@@ -1,0 +1,33 @@
+2026-04-14 23:05:02,418 - INFO - Authorization successful, token added to session
+2026-04-14 23:05:02,420 - INFO - Authorization successful, token added to session
+2026-04-14 23:05:02,422 - INFO - Authorization successful, token added to session
+2026-04-14 23:06:27,116 - INFO - Authorization successful, token added to session
+2026-04-14 23:06:27,120 - INFO - Authorization successful, token added to session
+2026-04-14 23:06:27,121 - INFO - Authorization successful, token added to session
+2026-04-14 23:07:14,169 - INFO - Authorization successful, token added to session
+2026-04-14 23:07:14,172 - INFO - sort_byyear, limit2
+2026-04-14 23:07:14,172 - INFO - Received 2 cars from server
+2026-04-14 23:07:14,174 - INFO - Authorization successful, token added to session
+2026-04-14 23:07:14,175 - INFO - sort_byengine_volume, limit3
+2026-04-14 23:07:14,175 - INFO - Received 3 cars from server
+2026-04-14 23:07:14,176 - INFO - Authorization successful, token added to session
+2026-04-14 23:07:14,177 - INFO - sort_byprice, limit4
+2026-04-14 23:07:14,177 - INFO - Received 4 cars from server
+2026-04-14 23:09:20,496 - INFO - Authorization successful, token added to session
+2026-04-14 23:09:20,498 - INFO - sort_byyear, limit2
+2026-04-14 23:09:20,499 - INFO - Received 25 cars from server
+2026-04-14 23:09:20,510 - INFO - Authorization successful, token added to session
+2026-04-14 23:09:20,512 - INFO - sort_byengine_volume, limit3
+2026-04-14 23:09:20,512 - INFO - Received 25 cars from server
+2026-04-14 23:09:20,515 - INFO - Authorization successful, token added to session
+2026-04-14 23:09:20,516 - INFO - sort_byprice, limit4
+2026-04-14 23:09:20,516 - INFO - Received 25 cars from server
+2026-04-14 23:10:22,014 - INFO - Authorization successful, token added to session
+2026-04-14 23:10:22,016 - INFO - sort_by = year, limit = 2
+2026-04-14 23:10:22,016 - INFO - Received 2 cars from server
+2026-04-14 23:10:22,017 - INFO - Authorization successful, token added to session
+2026-04-14 23:10:22,019 - INFO - sort_by = engine_volume, limit = 3
+2026-04-14 23:10:22,019 - INFO - Received 3 cars from server
+2026-04-14 23:10:22,020 - INFO - Authorization successful, token added to session
+2026-04-14 23:10:22,021 - INFO - sort_by = price, limit = 4
+2026-04-14 23:10:22,021 - INFO - Received 4 cars from server
