@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         PYTHONPATH = 'workspace'
-        DB_HOST     = 'my_shop_db'
+        DB_HOST     = 'host.docker.internal'
         DB_NAME     = 'postgres'
         DB_USER     = 'postgres'
         DB_PASS     = 'mysecretpassword'
@@ -19,39 +19,20 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 dir('lesson_29') {
-                    sh 'pip install -r requirements.txt --break-system-packages'
+                    sh 'pip install --break-system-packages -r requirements.txt || pip install -r requirements.txt'
                 }
             }
         }
 
         stage('Run Tests') {
             steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    dir('lesson_29') {
-                        sh 'export PIP_BREAK_SYSTEM_PACKAGES=1 && pytest -v --alluredir=allure-results'
+                dir('lesson_29') {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        // Вказуємо точний шлях до pytest всередині Jenkins
+                        sh '/var/jenkins_home/.local/bin/pytest -v --alluredir=allure-results'
                     }
                 }
             }
-        }
-
-        stage('Publish Results') {
-            steps {
-                allure includeProperties: false, jdk: '', results: [[path: 'lesson_29/allure-results']]
-            }
-        }
-    }
-
-    post {
-        always {
-            mail to: 'InsertYour@Mail.Here',
-                 subject: "Jenkins Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
-                 body: """Hello!
-
-Pipeline has finished with status: ${currentBuild.currentResult}.
-
-Details of the assembly and the Allure report can be viewed at the link: ${env.BUILD_URL}
-
-Your Jenkins server."""
         }
     }
 }
