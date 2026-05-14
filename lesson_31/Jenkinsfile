@@ -19,7 +19,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 dir('lesson_29') {
-                    sh 'pip install -r requirements.txt'
+                    sh 'pip install -r requirements.txt --break-system-packages'
                 }
             }
         }
@@ -28,7 +28,7 @@ pipeline {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     dir('lesson_29') {
-                        sh 'pytest -v --alluredir=allure-results'
+                        sh 'export PIP_BREAK_SYSTEM_PACKAGES=1 && pytest -v --alluredir=allure-results'
                     }
                 }
             }
