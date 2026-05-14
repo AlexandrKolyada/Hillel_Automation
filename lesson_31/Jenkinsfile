@@ -1,0 +1,9 @@
+stage('Run Tests') {
+    steps {
+        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+            dir('lesson_29') {
+                sh 'pytest -v --alluredir=allure-results'
+            }
+        }
+    }
+}
