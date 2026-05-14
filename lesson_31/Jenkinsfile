@@ -19,7 +19,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 dir('lesson_29') {
-                    sh 'pip install --break-system-packages -r requirements.txt || pip install -r requirements.txt'
+                    sh 'pip install --break-system-packages --force-reinstall -r requirements.txt || pip install --force-reinstall -r requirements.txt'
                 }
             }
         }
