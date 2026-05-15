@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     environment {
         PYTHONPATH = 'workspace'
         DB_HOST     = 'host.docker.internal'
@@ -8,31 +7,40 @@ pipeline {
         DB_USER     = 'postgres'
         DB_PASS     = 'mysecretpassword'
     }
-
     stages {
         stage('Checkout') {
-            steps {
-                checkout scm
-            }
+            steps { checkout scm }
         }
-
         stage('Install Dependencies') {
             steps {
                 dir('lesson_29') {
-                    sh 'pip install --break-system-packages -r requirements.txt || pip install -r requirements.txt'
+                    sh 'pip install --break-system-packages -r requirements.txt'
                 }
             }
         }
-
         stage('Run Tests') {
             steps {
                 dir('lesson_29') {
                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                        // Додаємо PYTHONPATH=. перед командою, щоб Python бачив папку app
+                        sh 'rm -rf allure-results'
                         sh 'PYTHONPATH=. /var/jenkins_home/.local/bin/pytest -v --alluredir=allure-results'
                     }
                 }
             }
+        }
+        stage('Publish Results') {
+            steps {
+                dir('lesson_29') {
+                    allure includeProperties: false, jdk: '', results: [[path: 'allure-results']]
+                }
+            }
+        }
+    }
+    post {
+        always {
+            mail to: 'InsertYour@Mail.Here',
+                 subject: "Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
+                 body: "Привіт! Тести завершені. Статус: ${currentBuild.currentResult}. Звіт тут: ${env.BUILD_URL}"
         }
     }
 }
