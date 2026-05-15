@@ -1,62 +1,67 @@
-import os
 import pytest
 import allure
+import time
 from app.db_manager import DBManager
 from app.users_table import UsersTable
 
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_NAME = os.getenv("DB_NAME", "postgres")
-DB_USER = os.getenv("DB_USER", "postgres")
-DB_PASS = os.getenv("DB_PASS", "mysecretpassword")
+
+@pytest.fixture(scope="class")
+def db_manager():
+    manager = DBManager(
+        host="host.docker.internal",
+        database="postgres",
+        user="postgres",
+        password="mysecretpassword"
+    )
+    manager.connect()
+    yield manager
+    manager.close()
 
 
-@pytest.fixture(scope="module")
-def users_page():
-    db = DBManager(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASS)
-    db.connect()
+@pytest.fixture(scope="class")
+def users_page(db_manager):
+    page = UsersTable(db_manager)
+    page.create_table_if_not_exists()
+    return page
 
-    table = UsersTable(db)
-    table.create_table_if_not_exists()
-
-    yield table
-
-    db.close()
-
-@allure.feature("Test DB: Users table (CRUD)")
 class TestUsersDatabase:
 
     def test_db_connection(self, users_page):
-        with allure.step("Check connect to DB"):
+        with allure.step("check connect DB"):
             assert users_page.db.connection is not None
-            assert users_page.db.connection.closed == 0
+            assert users_page.db.connection.closed is False
 
     def test_insert_and_select(self, users_page):
-        user_id = users_page.insert_user("Alexandr PageObject", "alex_po@test.com")
+        unique_suffix = int(time.time())
+        email = f"alex_po_{unique_suffix}@test.com"
 
-        with allure.step("Verify that the ID of the created user is returned"):
-            assert user_id is not None
+        user_id = users_page.insert_user("Alexandr PageObject", email)
 
-        user = users_page.get_user_by_id(user_id)
-
-        with allure.step("Validation of stored user data"):
+        with allure.step("Verifying the selection of the created user"):
+            user = users_page.get_user_by_id(user_id)
             assert user is not None
             assert user['name'] == "Alexandr PageObject"
-            assert user['email'] == "alex_po@test.com"
+            assert user['email'] == email
 
     def test_update(self, users_page):
-        user_id = users_page.insert_user("Tester Allure", "allure@test.com")
-        users_page.update_user_email(user_id, "new_allure@test.com")
+        unique_suffix = int(time.time())
+        email_start = f"allure_{unique_suffix}@test.com"
+        email_new = f"new_allure_{unique_suffix}@test.com"
 
-        updated_user = users_page.get_user_by_id(user_id)
+        user_id = users_page.insert_user("Tester Allure", email_start)
+        users_page.update_user_email(user_id, email_new)
 
-        with allure.step("Verify that the user's email was successfully updated in the DB"):
-            assert updated_user['email'] == "new_allure@test.com"
+        with allure.step("check email update"):
+            user = users_page.get_user_by_id(user_id)
+            assert user['email'] == email_new
 
     def test_delete(self, users_page):
-        user_id = users_page.insert_user("To Delete PO", "delete_po@test.com")
+        unique_suffix = int(time.time())
+        email = f"delete_{unique_suffix}@test.com"
+
+        user_id = users_page.insert_user("User For Delete", email)
         users_page.delete_user(user_id)
 
-        deleted_user = users_page.get_user_by_id(user_id)
-
-        with allure.step("Checking that a record no longer exists in the DB"):
-            assert deleted_user is None
+        with allure.step("check user deleting"):
+            user = users_page.get_user_by_id(user_id)
+            assert user is None
