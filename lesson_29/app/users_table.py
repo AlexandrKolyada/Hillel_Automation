@@ -1,13 +1,15 @@
 import allure
-from psycopg2.extras import DictCursor
+import psycopg
+from psycopg.rows import dict_row
 
 
 class UsersTable:
+    """Page Object для взаємодії з таблицею 'users' за допомогою psycopg3"""
 
     def __init__(self, db_manager):
         self.db = db_manager
 
-    @allure.step("Create table 'users', if it exists")
+    @allure.step("Створення таблиці 'users', якщо вона не існує")
     def create_table_if_not_exists(self):
         query = """
         CREATE TABLE IF NOT EXISTS users (
@@ -21,7 +23,7 @@ class UsersTable:
                 cursor.execute(query)
                 conn.commit()
 
-    @allure.step("Insert new user: name '{name}', email '{email}'")
+    @allure.step("Вставка (Insert) нового користувача: ім'ям '{name}', email '{email}'")
     def insert_user(self, name, email):
         query = "INSERT INTO users (name, email) VALUES (%s, %s) RETURNING id;"
         with self.db.connect() as conn:
@@ -31,15 +33,16 @@ class UsersTable:
                 conn.commit()
                 return user_id
 
-    @allure.step("Select user with ID: {user_id}")
+    @allure.step("Вибірка (Select) користувача з ID: {user_id}")
     def get_user_by_id(self, user_id):
         query = "SELECT id, name, email FROM users WHERE id = %s;"
         with self.db.connect() as conn:
-            with conn.cursor(cursor_factory=DictCursor) as cursor:
+            # У psycopg3 для повернення словників використовується row_factory
+            with conn.cursor(row_factory=dict_row) as cursor:
                 cursor.execute(query, (user_id,))
                 return cursor.fetchone()
 
-    @allure.step("Update user mail with ID {user_id} to new one email: '{new_email}'")
+    @allure.step("Оновлення (Update) пошти користувача з ID {user_id} на новий email: '{new_email}'")
     def update_user_email(self, user_id, new_email):
         query = "UPDATE users SET email = %s WHERE id = %s;"
         with self.db.connect() as conn:
@@ -47,7 +50,7 @@ class UsersTable:
                 cursor.execute(query, (new_email, user_id))
                 conn.commit()
 
-    @allure.step("Delete) user with ID: {user_id}")
+    @allure.step("Видалення (Delete) користувача з ID: {user_id}")
     def delete_user(self, user_id):
         query = "DELETE FROM users WHERE id = %s;"
         with self.db.connect() as conn:
